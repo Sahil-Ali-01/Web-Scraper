@@ -19,7 +19,8 @@ A sleek and lightweight **Spring Boot–powered web scraping API** capable of ex
 
 ## 📸 Preview (Optional UI)
 
-> Add your frontend screenshot here later
+<img width="1891" height="930" alt="image" src="https://github.com/user-attachments/assets/793c24e3-1dcb-4abd-af6e-fecdac43f10c" />
+
 
 ---
 
