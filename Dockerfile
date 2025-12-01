@@ -1,41 +1,33 @@
-# ================================
-# Stage 1: Build the Spring Boot Application
-# ================================
-FROM eclipse-temurin:17-jdk-focal AS builder
+# Stage 1: Build the Spring Boot Application (Java 25)
+FROM eclipse-temurin:25-jdk AS builder
 
-# Set working directory inside the container
 WORKDIR /app
 
-# Copy Maven wrapper files
+# Copy Maven wrapper and make executable
 COPY mvnw .
 COPY .mvn .mvn
-
-# Make mvnw executable
 RUN chmod +x mvnw
 
-# Copy pom.xml and download dependencies (cached layer)
+# Copy pom and download dependencies (cached layer)
 COPY pom.xml .
 RUN ./mvnw dependency:go-offline -B
 
-# Copy source code
+# Copy source
 COPY src src
 
-# Build the Spring Boot app (skip test compilation and execution)
+# Build application (skip tests)
 RUN ./mvnw clean package -Dmaven.test.skip=true
 
-# ================================
-# Stage 2: Run the Spring Boot Application
-# ================================
-FROM eclipse-temurin:17-jre-focal
+# Stage 2: Lightweight runtime image (Java 25 JRE)
+FROM eclipse-temurin:25-jre
 
-# Set working directory
 WORKDIR /app
 
-# Copy the built jar file from the builder stage
+# Copy jar produced in builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
-# Expose application port (change if needed)
+# Expose port (match your Spring Boot server.port if changed)
 EXPOSE 9090
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Start application
+ENTRYPOINT ["java", "-jar", "app.jar"]
